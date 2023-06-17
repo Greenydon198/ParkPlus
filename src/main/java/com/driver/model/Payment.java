@@ -9,10 +9,10 @@ import javax.persistence.*;
 public class Payment {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
-    private Boolean paymentCompleted;
+    private boolean paymentCompleted;
 
     @Enumerated(EnumType.STRING)
     private PaymentMode paymentMode;

@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class ParkingLotServiceImpl implements ParkingLotService {
@@ -33,10 +34,10 @@ public class ParkingLotServiceImpl implements ParkingLotService {
         ParkingLot parkingLot = parkingLotRepository1.findById(parkingLotId).get();
         spot.setParkingLot(parkingLot);
         spot.setPricePerHour(pricePerHour);
-        if(numberOfWheels==2){
+        if(numberOfWheels<=2){
             spot.setSpotType(SpotType.TWO_WHEELER);
         }
-        else if(numberOfWheels==4){
+        else if(numberOfWheels<=4){
             spot.setSpotType(SpotType.FOUR_WHEELER);
         }
         else{
@@ -52,7 +53,9 @@ public class ParkingLotServiceImpl implements ParkingLotService {
 
     @Override
     public void deleteSpot(int spotId) {
-        Spot spot = spotRepository1.findById(spotId).get();
+        Optional<Spot> spotOptional = spotRepository1.findById(spotId);
+        if(!spotOptional.isPresent())return;
+        Spot spot = spotOptional.get();
         ParkingLot parkingLot = spot.getParkingLot();
         parkingLot.getSpotList().remove(spot);
         spotRepository1.deleteById(spotId);
@@ -62,7 +65,9 @@ public class ParkingLotServiceImpl implements ParkingLotService {
     @Override
     public Spot updateSpot(int parkingLotId, int spotId, int pricePerHour) {
         ParkingLot parkingLot = parkingLotRepository1.findById(parkingLotId).get();
-        Spot spot = spotRepository1.findById(spotId).get();
+        Optional<Spot> spotOptional = spotRepository1.findById(spotId);
+        if(!spotOptional.isPresent())return null;
+        Spot spot = spotOptional.get();
         spot.setPricePerHour(pricePerHour);
         spotRepository1.save(spot);
         return spot;
